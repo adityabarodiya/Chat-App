@@ -1,22 +1,32 @@
 // Chat.js
-import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client';
+import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
+import {fetchdata} from "./helperFunctions";
 
-const socket = io('http://localhost:3001'); // Replace with your backend URL
+
+const socket = io("http://localhost:3001"); // Replace with your backend URL
 
 function Chat() {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
+
+    fetchdata()
+
+
     // Connect to the WebSocket server
+
+
+    
     socket.connect();
 
     // Listen for incoming messages
-    socket.on('message', (data) => {
+    socket.on("message", (data) => {
       setChatMessages((prevMessages) => [...prevMessages, data]);
     });
-    
+
     // Clean up on component unmount
     return () => {
       socket.disconnect();
@@ -25,8 +35,8 @@ function Chat() {
 
   const handleSendMessage = () => {
     // Send the message to the WebSocket server
-    socket.emit('message', { text: message, user: 'current_user' });
-    setMessage('');
+    socket.emit("message", { text: message, user: "current_user" });
+    setMessage("");
   };
 
   return (
@@ -37,7 +47,11 @@ function Chat() {
           <div key={index}>{`${msg.user}: ${msg.text}`}</div>
         ))}
       </div>
-      <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+      />
       <button type="button" onClick={handleSendMessage}>
         Send
       </button>

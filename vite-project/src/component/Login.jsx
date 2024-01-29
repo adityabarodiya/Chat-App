@@ -21,15 +21,21 @@ function Login() {
       // Assuming your backend returns a success status
       if (response.status === 200) {
         // Redirect to the login page after successful registration
+        
+        localStorage.setItem("token", data.token);
+        // stuck here until
+        console.log(response.data);
         alert('login successful');
         navigate('/chat');
       } else {
         // Handle other response statuses or errors
-        console.error('Registration failed:', response.data);
+        console.error('Login failed:', response.data);
+        alert('login failed');
       }
     } catch (error) {
       // Handle network errors or other exceptions
-      console.error('Registration failed:', error.message);
+      console.error('Login failed:', error.message);
+      alert('login failed');
     }
   };
 

@@ -36,6 +36,8 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
+const SECRET = 'secret_KEY';
+
 
 // Authentication middleware
 const authenticate = (req, res, next) => {
@@ -47,7 +49,7 @@ const authenticate = (req, res, next) => {
   }
 
   // Verify the token
-  jwt.verify(token, "secret_key", (err, decoded) => {
+  jwt.verify(token, SECRET, (err, decoded) => {
     if (err) {
       return res.status(401).json({ error: "Unauthorized - Invalid token" });
     }
@@ -75,9 +77,12 @@ app.post("/register", async (req, res) => {
       username,
       password: hashedPassword,
     });
-
+    
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully" });
+    const token = jwt.sign({ _id: newUser._id }, SECRET, {
+      expiresIn: '12h',
+    });
+    res.status(201).json({ message: "User registered successfully",token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -98,7 +103,10 @@ app.post("/login", async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
-    res.status(200).json({ message: "Login successful" });
+    const token = jwt.sign({ _id: user._id }, SECRET, {
+      expiresIn: '12h',
+    });
+    res.status(200).json({ message: "Login successful" ,token});
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -111,6 +119,25 @@ app.get("/chat", authenticate, (req, res) => {
   const { username } = req.user;
 
   res.json({ message: `Welcome to the chat, ${username}!` });
+});
+
+// Define the "me" endpoint
+app.get("/me", authenticate, async (req, res) => {
+  try {
+    // Retrieve user information from the authenticated request
+    const user = req.user;
+
+    // Construct the response object with desired user information
+    const responseData = {
+      username: user.username, // Include other relevant user fields as needed
+      // ... other user information
+    };
+
+    res.json(responseData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 // Socket.io Implementation

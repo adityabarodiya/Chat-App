@@ -21,10 +21,8 @@ function Login() {
       // Assuming your backend returns a success status
       if (response.status === 200) {
         // Redirect to the login page after successful registration
-        
-        localStorage.setItem("token", data.token);
-        // stuck here until
-        console.log(response.data);
+
+        localStorage.setItem("token", response.data.token);
         alert('login successful');
         navigate('/chat');
       } else {
@@ -60,3 +58,4 @@ function Login() {
 }
 
 export default Login;
+export { BASE_URL }; 

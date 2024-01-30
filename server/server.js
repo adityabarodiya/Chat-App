@@ -42,16 +42,19 @@ const SECRET = 'secret_KEY';
 // Authentication middleware
 const authenticate = (req, res, next) => {
   // Retrieve the token from the request header
-  const token = req.headers.authorization;
-
-  if (!token) {
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ error: "Unauthorized - Token not provided" });
   }
+
+  const token = authHeader.split(" ")[1];
+
 
   // Verify the token
   jwt.verify(token, SECRET, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ error: "Unauthorized - Invalid token" });
+      return res.status(401).json({ error: "Unauthorized - Invalid token" ,token:token  });
     }
 
     // Attach the user information to the request object for later use
@@ -77,12 +80,12 @@ app.post("/register", async (req, res) => {
       username,
       password: hashedPassword,
     });
-    
+
     await newUser.save();
-    const token = jwt.sign({ _id: newUser._id }, SECRET, {
+    const token = jwt.sign({ _id: newUser._id, username: newUser.username }, SECRET, {
       expiresIn: '12h',
     });
-    res.status(201).json({ message: "User registered successfully",token });
+    res.status(201).json({ message: "User registered successfully", token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -103,22 +106,25 @@ app.post("/login", async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
-    const token = jwt.sign({ _id: user._id }, SECRET, {
+
+    const token = jwt.sign({ _id: user._id, username: user.username }, SECRET, {
       expiresIn: '12h',
     });
-    res.status(200).json({ message: "Login successful" ,token});
+    res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
+
 // Protected chat endpoint using the authenticate middleware
 app.get("/chat", authenticate, (req, res) => {
   // Access the authenticated user information
+  console.log('from api',req.user); // Log the decoded user information is not printing on the console
   const { username } = req.user;
 
-  res.json({ message: `Welcome to the chat, ${username}!` });
+  res.json({ message: `Welcome to the chat, ${username}!`, username: username });
 });
 
 // Define the "me" endpoint

@@ -12,9 +12,9 @@ function App() {
         Chatting App
         <Routes>
           <Route path="/register" element={<Registration />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login />} /> {/*this is line 15}*/}
           <Route path="/chat" element={<Chat />} />
-          <Route path="/" exact element={<Login />} />
+          {/* <Route path="/" exact element={<Login />} /> */}
         </Routes>
       </div>
     </Router>

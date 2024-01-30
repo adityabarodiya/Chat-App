@@ -1,7 +1,7 @@
 // Chat.js
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
-import {fetchdata} from "./helperFunctions";
+import fetchData from "./helperFunctions";
 
 
 const socket = io("http://localhost:3001"); // Replace with your backend URL
@@ -12,13 +12,11 @@ function Chat() {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
+    const token = localStorage.getItem('token'); // Assuming the token is stored as 'token'
 
-    fetchdata()
-
+    fetchData(setUsername,token);
 
     // Connect to the WebSocket server
-
-
     
     socket.connect();
 
@@ -42,6 +40,7 @@ function Chat() {
   return (
     <div>
       <h2>Chat</h2>
+      <h3>{username}</h3>
       <div>
         {chatMessages.map((msg, index) => (
           <div key={index}>{`${msg.user}: ${msg.text}`}</div>

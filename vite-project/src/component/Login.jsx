@@ -24,7 +24,7 @@ function Login() {
 
         localStorage.setItem("token", response.data.token);
         alert('login successful');
-        navigate('/chat');
+        window.location = '/chat';        
       } else {
         // Handle other response statuses or errors
         console.error('Login failed:', response.data);
@@ -45,10 +45,12 @@ function Login() {
           Username:
           <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
         </label>
+        <br /><br />
         <label>
           Password:
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </label>
+        <br /><br />
         <button type="button" onClick={handleLogin}>
           Login
         </button>

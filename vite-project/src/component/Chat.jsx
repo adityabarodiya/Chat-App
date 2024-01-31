@@ -1,23 +1,19 @@
-// Chat.js
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import fetchData from "./helperFunctions";
-
-
+import "./Chat.css";
 const socket = io("http://localhost:3001"); // Replace with your backend URL
 
 function Chat() {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [username, setUsername] = useState("");
+  const [name, setName] = useState(""); // State to store the user's name
 
   useEffect(() => {
-    const token = localStorage.getItem('token'); // Assuming the token is stored as 'token'
-
-    fetchData(setUsername,token);
+    fetchData(setUsername);
 
     // Connect to the WebSocket server
-    
     socket.connect();
 
     // Listen for incoming messages
@@ -32,28 +28,48 @@ function Chat() {
   }, []);
 
   const handleSendMessage = () => {
-    // Send the message to the WebSocket server
-    socket.emit("message", { text: message, user: "current_user" });
+    const timestamp = new Date().toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    }); // Get 12-hour formatted timestamp
+    // Send the message with the user's name and timestamp
+    socket.emit("message", { text: message, user: name, timestamp });
     setMessage("");
+  };
+  
+  const handleNameChange = (event) => {
+    setName(event.target.value); // Update the name state
   };
 
   return (
-    <div>
+    <div className="chat-container">
       <h2>Chat</h2>
-      <h3>{username}</h3>
-      <div>
+      <div className="message-container">
         {chatMessages.map((msg, index) => (
-          <div key={index}>{`${msg.user}: ${msg.text}`}</div>
+          <div key={index} className="chat-message">
+            <div className="user-text">{`${msg.user}: ${msg.text}`}</div>
+            <span className="timestamp">{msg.timestamp}</span>
+          </div>
         ))}
       </div>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button type="button" onClick={handleSendMessage}>
-        Send
-      </button>
+
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="Type a message..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="message-input"
+        />
+        <button
+          type="button"
+          onClick={handleSendMessage}
+          className="send-button"
+        >
+          Send
+        </button>
+      </div>
     </div>
   );
 }

@@ -16,16 +16,18 @@
 
     return (
         <div>
-        <h2>Registration</h2>
+        <h2>Registor</h2>
         <form>
             <label>
             Username:
             <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
             </label>
             <label>
+                <br /><br />
             Password:
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </label>
+            <br /><br />
             <button type="button" onClick={handleRegister}>
             Register
             </button>

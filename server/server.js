@@ -1,3 +1,4 @@
+// server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
@@ -10,14 +11,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
 const server = http.createServer(app);
-const io = require('socket.io')(server, {
+const io = require("socket.io")(server, {
   cors: {
-    origin: 'http://localhost:5173', // Allow requests from this specific origin
+    origin: "http://localhost:5173",
   },
 });
-
 
 const PORT = process.env.PORT || 3001;
 const MONGODB_URI =
@@ -36,25 +35,25 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-const SECRET = 'secret_KEY';
-
+const SECRET = "secret_KEY";
 
 // Authentication middleware
 const authenticate = (req, res, next) => {
   // Retrieve the token from the request header
   const authHeader = req.headers.authorization;
-  
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ error: "Unauthorized - Token not provided" });
   }
 
   const token = authHeader.split(" ")[1];
 
-
   // Verify the token
   jwt.verify(token, SECRET, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ error: "Unauthorized - Invalid token" ,token:token  });
+      return res
+        .status(401)
+        .json({ error: "Unauthorized - Invalid token", token: token });
     }
 
     // Attach the user information to the request object for later use
@@ -82,9 +81,13 @@ app.post("/register", async (req, res) => {
     });
 
     await newUser.save();
-    const token = jwt.sign({ _id: newUser._id, username: newUser.username }, SECRET, {
-      expiresIn: '12h',
-    });
+    const token = jwt.sign(
+      { _id: newUser._id, username: newUser.username },
+      SECRET,
+      {
+        expiresIn: "12h",
+      }
+    );
     res.status(201).json({ message: "User registered successfully", token });
   } catch (error) {
     console.error(error);
@@ -108,7 +111,7 @@ app.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign({ _id: user._id, username: user.username }, SECRET, {
-      expiresIn: '12h',
+      expiresIn: "12h",
     });
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
@@ -117,14 +120,15 @@ app.post("/login", async (req, res) => {
   }
 });
 
-
 // Protected chat endpoint using the authenticate middleware
 app.get("/chat", authenticate, (req, res) => {
   // Access the authenticated user information
-  console.log('from api',req.user); // Log the decoded user information is not printing on the console
   const { username } = req.user;
 
-  res.json({ message: `Welcome to the chat, ${username}!`, username: username });
+  res.json({
+    message: `Welcome to the chat, ${username}!`,
+    username: username,
+  });
 });
 
 // Define the "me" endpoint
@@ -135,11 +139,28 @@ app.get("/me", authenticate, async (req, res) => {
 
     // Construct the response object with desired user information
     const responseData = {
-      username: user.username, // Include other relevant user fields as needed
-      // ... other user information
+      username: user.username,
     };
 
     res.json(responseData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Search for users based on the query
+app.get("/searchUsers", authenticate, async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    // Use a case-insensitive regex for the search
+    const regex = new RegExp(query, "i");
+
+    // Find users matching the query
+    const users = await User.find({ username: regex });
+
+    res.json({ users });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

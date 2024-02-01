@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
+import { TextField, Button, Paper, Box, Typography, IconButton } from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
 import io from "socket.io-client";
 import fetchData from "./helperFunctions";
-import "./Chat.css";
 
 const socket = io("http://localhost:3001"); // Replace with your backend URL
 
@@ -15,21 +16,22 @@ function Chat() {
   useEffect(() => {
     fetchData(setUsername);
 
-    // Prompt user for name if not set
     if (!name) {
       const enteredName = prompt("Please enter your name:");
       setName(enteredName || "Anonymous");
     }
 
-    // Connect to the WebSocket server
     socket.connect();
 
-    // Listen for incoming messages
     socket.on("message", (data) => {
       setChatMessages((prevMessages) => [...prevMessages, data]);
     });
 
-    // Clean up on component unmount
+    // Retrieve user messages on login
+    socket.on("login", (data) => {
+      setChatMessages(data.messages || []);
+    });
+
     return () => {
       socket.disconnect();
     };
@@ -53,38 +55,83 @@ function Chat() {
       hour12: true,
     });
     socket.emit("message", { text: message, user: name, timestamp });
+
+    // Add the sent message to the local state for immediate display
+    setChatMessages((prevMessages) => [
+      ...prevMessages,
+      { text: message, user: name, timestamp },
+    ]);
+
     setMessage("");
   };
 
   return (
-    <div className="chat-container">
-      <h2>Chat</h2>
-      <div ref={messageContainerRef} className="message-container">
+    <Box
+      sx={{
+        maxWidth: 400,
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Typography variant="h5" gutterBottom>
+        Chat
+      </Typography>
+      <Paper
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          border: "1px solid #ccc",
+          padding: 2,
+          maxHeight: 200,
+          overflowY: "auto",
+        }}
+        ref={messageContainerRef}
+      >
         {chatMessages.map((msg, index) => (
-          <div key={index} className="chat-message">
-            <div className="user-text">{`${msg.text}`}</div>
-            <span className="username">{msg.user}</span>
-            <span className="timestamp">{msg.timestamp}</span>
-          </div>
+          <Box key={index} sx={{ marginBottom: 2 }}>
+            <Paper
+              sx={{
+                backgroundColor: "#dcf8c6",
+                padding: 2,
+                borderRadius: 1,
+                maxWidth: "70%",
+              }}
+            >
+              {msg.text}
+            </Paper>
+            <Typography variant="caption" sx={{ color: "#888" }}>
+              {msg.user} - {msg.timestamp}
+            </Typography>
+          </Box>
         ))}
-      </div>
-      <div className="input-container">
-        <input
+      </Paper>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: 2,
+        }}
+      >
+        <TextField
           type="text"
           placeholder="Type a message..."
+          variant="standard"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="message-input"
+          sx={{ flex: 1, marginRight: 1 }}
         />
-        <button
-          type="button"
+        <IconButton
+          color="success"
           onClick={handleSendMessage}
-          className="send-button"
+          sx={{ borderRadius: "50%" }}
         >
-          Send
-        </button>
-      </div>
-    </div>
+          <SendIcon />
+        </IconButton>
+      </Box>
+    </Box>
   );
 }
 

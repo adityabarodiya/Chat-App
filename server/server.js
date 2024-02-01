@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
@@ -31,6 +30,12 @@ mongoose.connect(MONGODB_URI, {
 const userSchema = new mongoose.Schema({
   username: String,
   password: String,
+  messages: [
+    {
+      content: String,
+      timestamp: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
@@ -110,10 +115,19 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ _id: user._id, username: user.username }, SECRET, {
-      expiresIn: "12h",
-    });
-    res.status(200).json({ message: "Login successful", token });
+    const token = jwt.sign(
+      { _id: user._id, username: user.username },
+      SECRET,
+      {
+        expiresIn: "12h",
+      }
+    );
+
+    // Retrieve user's messages
+    const messages = user.messages || [];
+
+    // Send login response with messages
+    res.status(200).json({ message: "Login successful", token, messages });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -172,8 +186,16 @@ io.on("connection", (socket) => {
   console.log("User connected");
 
   // Handle incoming messages
-  socket.on("message", (data) => {
+  socket.on("message", async (data) => {
     console.log("Message received:", data);
+
+    // Save the message to the user's messages array in the database
+    const user = await User.findById(data.userId);
+    if (user) {
+      user.messages.push({ content: data.message });
+      await user.save();
+    }
+
     // Broadcast the message to all connected clients
     io.emit("message", data);
   });

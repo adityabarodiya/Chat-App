@@ -1,13 +1,17 @@
 // Login.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Card from "@mui/material/Card";
+import Typography from "@mui/material/Typography";
 
-let BASE_URL = 'http://localhost:3001';
+let BASE_URL = "http://localhost:3001";
 
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -23,41 +27,67 @@ function Login() {
         // Redirect to the login page after successful registration
 
         localStorage.setItem("token", response.data.token);
-        alert('login successful');
-        window.location = '/chat';        
+        alert("login successful");
+        window.location = "/chat";
       } else {
         // Handle other response statuses or errors
-        console.error('Login failed:', response.data);
-        alert('login failed');
+        console.error("Login failed:", response.data);
+        alert("login failed");
       }
     } catch (error) {
       // Handle network errors or other exceptions
-      console.error('Login failed:', error.message);
-      alert('login failed');
+      console.error("Login failed:", error.message);
+      alert("login failed");
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form>
-        <label>
-          Username:
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-        </label>
-        <br /><br />
-        <label>
-          Password:
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </label>
-        <br /><br />
-        <button type="button" onClick={handleLogin}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "50vh",
+      }}
+    >
+      <div>
+        <Typography variant="h5" component="h1">
           Login
-        </button>
-      </form>
+        </Typography>
+        <div className="login-form" style={{ width: "70vh" }}>
+          <Card>
+            <div style={{ margin: 15 }}>
+              <TextField
+                id="filled-basic"
+                label="Username"
+                variant="outlined"
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <br />
+              <br />
+
+              <TextField
+                id="outlined-basic"
+                type="password"
+                label="Password"
+                variant="outlined"
+                width="70vh"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+              <br />
+              <br />
+
+              <Button variant="outlined" onClick={handleLogin}>
+                Login
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default Login;
-export { BASE_URL }; 
+export { BASE_URL };

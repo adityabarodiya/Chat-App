@@ -3,8 +3,9 @@ import { TextField, Button, Paper, Box, Typography, IconButton } from "@mui/mate
 import SendIcon from '@mui/icons-material/Send';
 import io from "socket.io-client";
 import fetchData from "./helperFunctions";
+import { BASE_URL } from "./Login";
 
-const socket = io("http://localhost:3001"); // Replace with your backend URL
+const socket = io(BASE_URL); // Replace with your backend URL
 
 function Chat() {
   const [message, setMessage] = useState("");

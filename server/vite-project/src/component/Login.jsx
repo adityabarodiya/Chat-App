@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 
-let BASE_URL = "http://localhost:3001";
+let BASE_URL = window.location.origin;
 
 function Login() {
   const [username, setUsername] = useState("");

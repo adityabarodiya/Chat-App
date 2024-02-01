@@ -146,7 +146,8 @@ app.get("/chat", authenticate, (req, res) => {
 });
 
 
-app.get('/api/', (req, res) =>{
+app.get('/api', (req, res) =>{
+  
   res.send('Welcome to server');
 })
 // Define the "me" endpoint

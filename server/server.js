@@ -5,9 +5,11 @@ const http = require("http");
 const socketIo = require("socket.io");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
+const path = require("path");
 
 const app = express();
 app.use(cors());
+
 app.use(express.json());
 
 const server = http.createServer(app);
@@ -18,6 +20,7 @@ const io = require("socket.io")(server, {
 });
 
 const PORT = process.env.PORT || 3001;
+
 const MONGODB_URI =
   "mongodb+srv://adityabarodiya:xJgDIkvrklyd04Mt@cluster0.m6xjsds.mongodb.net/Chatting";
 
@@ -212,7 +215,10 @@ io.on("connection", (socket) => {
   });
 });
 
-
+app.get("/", (req, res) => {
+  app.use(express.static(path.resolve(__dirname, "vite-project", "dist")));
+  res.sendFile(path.resolve(__dirname, "vite-project", "dist", "index.html"));
+});
 
 // Start the server
 server.listen(PORT, () => {

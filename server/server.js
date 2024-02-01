@@ -145,7 +145,12 @@ app.get("/chat", authenticate, (req, res) => {
   });
 });
 
+
+app.get('/api/', (req, res) =>{
+  res.send('Welcome to server');
+})
 // Define the "me" endpoint
+
 app.get("/me", authenticate, async (req, res) => {
   try {
     // Retrieve user information from the authenticated request
@@ -205,6 +210,8 @@ io.on("connection", (socket) => {
     console.log("User disconnected");
   });
 });
+
+
 
 // Start the server
 server.listen(PORT, () => {

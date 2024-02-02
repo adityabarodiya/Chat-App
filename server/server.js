@@ -20,7 +20,7 @@ let URL = "https://chat-app-i79z.onrender.com"
 const io = require("socket.io")(server, {
   cors: {
     origin: URL
-
+        
   },
 });
 

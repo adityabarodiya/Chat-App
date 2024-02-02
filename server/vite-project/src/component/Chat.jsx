@@ -5,7 +5,13 @@ import io from "socket.io-client";
 import fetchData from "./helperFunctions";
 import { BASE_URL } from "./Login";
 
-const socket = io(BASE_URL); 
+let url = 'https://chat-app-i79z.onrender.com'
+
+url = window.location.origin
+
+const socket = io(url, {
+  transport: ["websocket", "polling"],
+});
 
 function Chat() {
   const [message, setMessage] = useState("");

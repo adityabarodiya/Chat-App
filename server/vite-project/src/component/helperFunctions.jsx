@@ -13,13 +13,15 @@ const fetchData = async (setUsername) => {
   
       const userData = response.data;
      // console.log("User data:", userData);
-  
+
       // Extract the username from the response data
-      const username = userData.username; // Assuming the username is under the "username" property
+      const username = userData.username; 
       console.log("Username:", username);
   
       if (username) {
         setUsername(username);
+        // window.location = "/";
+
       } else {
         console.error("Username not found in response data.");
       }
@@ -30,7 +32,7 @@ const fetchData = async (setUsername) => {
 
   const handleLogOut = (navigate) => {
     localStorage.setItem("token", null);
-    window.location = "/";;
+    window.location = "/";
   }
   const navigateToSignUp = (navigate) => {
     navigate("/registor");

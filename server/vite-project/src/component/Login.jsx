@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 
 let BASE_URL = window.location.origin;
 
-//BASE_URL = 'http://localhost:3001'
+BASE_URL = 'http://localhost:3001'
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -30,6 +30,7 @@ function Login() {
 
         localStorage.setItem("token", response.data.token);
         alert("login successful");
+        window.location.href = "https://chat-app-i79z.onrender.com/"
       } else {
         // Handle other response statuses or errors
         console.error("Login failed:", response.data);

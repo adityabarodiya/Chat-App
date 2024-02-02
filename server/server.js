@@ -14,15 +14,22 @@ app.use(express.json());
 
 const server = http.createServer(app);
 
-let URL = "https://chat-app-i79z.onrender.com"
+let URL = "https://chat-app-i79z.onrender.com";
 //URL = "http://localhost:5173"
+URL = "http://localhost:3001"
+
+const corsOptions = {
+  origin: ["https://chat-app-i79z.onrender.com", "http://localhost:3001"],
+  methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
+};
+
+app.use(cors(corsOptions));
 
 const io = require("socket.io")(server, {
-  cors: {
-    origin: URL
-        
-  },
+  cors: corsOptions,
 });
+
 
 const PORT = process.env.PORT || 3001;
 
@@ -123,13 +130,9 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      { _id: user._id, username: user.username },
-      SECRET,
-      {
-        expiresIn: "12h",
-      }
-    );
+    const token = jwt.sign({ _id: user._id, username: user.username }, SECRET, {
+      expiresIn: "12h",
+    });
 
     // Retrieve user's messages
     const messages = user.messages || [];
@@ -153,13 +156,9 @@ app.get("/chat", authenticate, (req, res) => {
   });
 });
 
-
-app.get('/api', (req, res) =>{
-  
-  res.send('Welcome to server');
-})
- 
-
+app.get("/api", (req, res) => {
+  res.send("Welcome to server");
+});
 
 // Search for users based on the query
 app.get("/searchUsers", authenticate, async (req, res) => {

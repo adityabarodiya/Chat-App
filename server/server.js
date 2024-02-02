@@ -13,9 +13,14 @@ app.use(cors());
 app.use(express.json());
 
 const server = http.createServer(app);
+
+let URL = "https://chat-app-i79z.onrender.com"
+//URL = "http://localhost:5173"
+
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: URL
+
   },
 });
 
@@ -153,24 +158,8 @@ app.get('/api', (req, res) =>{
   
   res.send('Welcome to server');
 })
-// Define the "me" endpoint
+ 
 
-app.get("/me", authenticate, async (req, res) => {
-  try {
-    // Retrieve user information from the authenticated request
-    const user = req.user;
-
-    // Construct the response object with desired user information
-    const responseData = {
-      username: user.username,
-    };
-
-    res.json(responseData);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 
 // Search for users based on the query
 app.get("/searchUsers", authenticate, async (req, res) => {

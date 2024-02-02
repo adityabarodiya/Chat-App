@@ -6,6 +6,7 @@ import {
   handleLogOut,
   navigateToSignUp,
   navigateToLogin,
+  navigateToChat,
 } from "./helperFunctions";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -22,11 +23,24 @@ const AppBar = () => {
 
   if (username) {
     return (
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems : "center" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Typography variant="h5" component="h1">
           Welcome {username}
         </Typography>
         <div>
+          <Button
+            style={{ marginRight: 10 }}
+            variant="contained"
+            onClick={() => navigateToChat(navigate)}
+          >
+            Chat
+          </Button>
           <Button variant="contained" onClick={() => handleLogOut(navigate)}>
             Log out
           </Button>
@@ -47,10 +61,17 @@ const AppBar = () => {
           Login or Signup
         </Typography>
         <div>
-          <Button style={{marginRight: 10}} variant="contained" onClick={() => navigateToLogin(navigate)}>
+          <Button
+            style={{ marginRight: 10 }}
+            variant="contained"
+            onClick={() => navigateToLogin(navigate)}
+          >
             Login
           </Button>
-          <Button variant="contained" onClick={() => navigateToSignUp(navigate)}>
+          <Button
+            variant="contained"
+            onClick={() => navigateToSignUp(navigate)}
+          >
             Sign Up
           </Button>
         </div>

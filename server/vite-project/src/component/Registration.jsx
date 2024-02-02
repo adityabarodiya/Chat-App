@@ -31,12 +31,14 @@ function Registration() {
         <Typography variant="h5" component="h1">
           Sign Up
         </Typography>
-        <div className="login-form" style={{ width: "70vh" }}>
-          <Card>
-            <div style={{ margin: 15 }}>
+        <div className="login-form" >
+          <Card style={{width: 350, padding: 20}}>
+            <div style={{  }}>
               <TextField
                 id="filled-basic"
                 label="Username"
+                fullWidth={true}
+
                 variant="outlined"
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -47,6 +49,8 @@ function Registration() {
                 id="outlined-basic"
                 type="password"
                 label="Password"
+                fullWidth={true}
+
                 variant="outlined"
                 width="70vh"
                 onChange={(e) => setPassword(e.target.value)}

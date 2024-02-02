@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import fetchData from "./helperFunctions";
 import { BASE_URL } from "./Login";
 
-const socket = io(BASE_URL); // Replace with your backend URL
+const socket = io(BASE_URL); 
 
 function Chat() {
   const [message, setMessage] = useState("");

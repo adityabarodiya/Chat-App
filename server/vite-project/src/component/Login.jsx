@@ -28,7 +28,6 @@ function Login() {
 
         localStorage.setItem("token", response.data.token);
         alert("login successful");
-        window.location = "/chat";
       } else {
         // Handle other response statuses or errors
         console.error("Login failed:", response.data);
@@ -54,11 +53,12 @@ function Login() {
         <Typography variant="h5" component="h1">
           Login
         </Typography>
-        <div className="login-form" style={{ width: "70vh" }}>
-          <Card>
-            <div style={{ margin: 15 }}>
+        <div className="login-form" style={{}}>
+          <Card style={{width: 350, padding: 20}} >
+            <div style={{ }}>
               <TextField
                 id="filled-basic"
+                fullWidth={true}
                 label="Username"
                 variant="outlined"
                 onChange={(e) => setUsername(e.target.value)}
@@ -71,7 +71,7 @@ function Login() {
                 type="password"
                 label="Password"
                 variant="outlined"
-                width="70vh"
+                fullWidth={true}
                 onChange={(e) => setPassword(e.target.value)}
               />
 

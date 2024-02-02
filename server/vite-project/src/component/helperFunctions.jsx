@@ -40,7 +40,11 @@ const fetchData = async (setUsername) => {
     navigate("/login");
   };
 
+  const navigateToChat = (navigate) => {
+    navigate("/chat");
+  };
+
 
 export default fetchData;
 
-export {handleLogOut, navigateToLogin, navigateToSignUp}
+export {handleLogOut, navigateToLogin, navigateToSignUp, navigateToChat}

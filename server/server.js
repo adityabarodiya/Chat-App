@@ -14,12 +14,9 @@ app.use(express.json());
 
 const server = http.createServer(app);
 
-let URL = "https://chat-app-i79z.onrender.com";
-//URL = "http://localhost:5173"
-URL = "http://localhost:3001"
 
 const corsOptions = {
-  origin: ["https://chat-app-i79z.onrender.com", "http://localhost:3001"],
+  origin: ["https://chat-app-i79z.onrender.com", "http://localhost:3001" , "https://chat-oc29.onrender.com/"],
   methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
   allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
 };

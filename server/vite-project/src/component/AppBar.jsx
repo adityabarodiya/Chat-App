@@ -16,9 +16,9 @@ const AppBar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token"); // Assuming the token is stored as 'token'
+    //const token = localStorage.getItem("token"); // Assuming the token is stored as 'token'
     fetchData(setUsername);
-    // console.log(username);
+    console.log(username);
   }, []);
 
   if (username) {

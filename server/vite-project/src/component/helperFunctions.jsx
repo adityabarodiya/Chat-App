@@ -16,7 +16,7 @@ const fetchData = async (setUsername) => {
   
       // Extract the username from the response data
       const username = userData.username; // Assuming the username is under the "username" property
-      //console.log("Username:", username);
+      console.log("Username:", username);
   
       if (username) {
         setUsername(username);

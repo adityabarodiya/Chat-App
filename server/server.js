@@ -157,23 +157,7 @@ app.get("/api", (req, res) => {
   res.send("Welcome to server");
 });
 
-// Search for users based on the query
-app.get("/searchUsers", authenticate, async (req, res) => {
-  try {
-    const { query } = req.query;
 
-    // Use a case-insensitive regex for the search
-    const regex = new RegExp(query, "i");
-
-    // Find users matching the query
-    const users = await User.find({ username: regex });
-
-    res.json({ users });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 
 // Socket.io Implementation
 io.on("connection", (socket) => {

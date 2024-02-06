@@ -12,9 +12,7 @@ function Registration() {
   const navigate = useNavigate();
 
   const handleRegister = () => {
-    // Implement logic to send registration data to the backend
-    // Use WebSocket or HTTP request to register the user
-    // Redirect to login page after successful registration
+    
     navigate("/login");
   };
 
